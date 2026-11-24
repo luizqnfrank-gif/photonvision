@@ -1,0 +1,31 @@
+[package]
+name = "photon-common"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+anyhow.workspace = true
+thiserror.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+rmp-serde.workspace = true
+prost.workspace = true
+rusqlite.workspace = true
+zip.workspace = true
+tokio.workspace = true
+tokio-tungstenite.workspace = true
+futures-util.workspace = true
+crossbeam-channel.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+nalgebra.workspace = true
+uuid.workspace = true
+regex.workspace = true
+photon-targeting.workspace = true
+
+[dev-dependencies]
+tempfile.workspace = true
+
+[lints]
+workspace = true

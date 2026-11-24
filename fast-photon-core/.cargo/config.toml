@@ -1,0 +1,17 @@
+# Cargo configuration for NVIDIA Jetson Orin Nano (ARM Cortex-A78AE, aarch64-unknown-linux-gnu)
+#
+# Native build on Jetson Orin Nano:
+#   cargo build --release --bin fast-phontonvision-core --features jetson-orin-nano
+#
+# Cross-compile from x86_64 Linux host to Jetson Orin Nano:
+#   rustup target add aarch64-unknown-linux-gnu
+#   cargo build --release --target aarch64-unknown-linux-gnu --bin fast-phontonvision-core --features jetson-orin-nano
+
+[alias]
+build-jetson-orin-nano = "build --release --target aarch64-unknown-linux-gnu --bin fast-phontonvision-core --features jetson-orin-nano"
+build-jetson-native = "build --release --bin fast-phontonvision-core --features jetson-orin-nano"
+
+[target.aarch64-unknown-linux-gnu]
+linker = "aarch64-linux-gnu-gcc"
+# NVIDIA Jetson Orin Nano features an 6-core ARM Cortex-A78AE (ARMv8.2-A with crypto, fp16, dotprod, rcpc)
+rustflags = ["-C", "target-cpu=cortex-a78ae"]

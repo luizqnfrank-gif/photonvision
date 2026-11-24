@@ -1,0 +1,25 @@
+[package]
+name = "photon-web"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+anyhow.workspace = true
+thiserror.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+rmp-serde.workspace = true
+tokio.workspace = true
+futures-util.workspace = true
+axum.workspace = true
+tower-http.workspace = true
+bytes.workspace = true
+tracing.workspace = true
+photon-targeting.workspace = true
+photon-common.workspace = true
+photon-hal.workspace = true
+photon-vision.workspace = true
+
+[lints]
+workspace = true

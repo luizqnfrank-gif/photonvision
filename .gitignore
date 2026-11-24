@@ -171,3 +171,9 @@ photon-serde-tests/py/
 # SQLite files, except those in test-resources
 *.sqlite*
 !test-resources/**/*.sqlite*
+
+# Rust (fast-photon-core)
+fast-photon-core/target/
+*.rs.bk
+*.prof*
+

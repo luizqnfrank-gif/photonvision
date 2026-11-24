@@ -1,0 +1,115 @@
+[workspace]
+resolver = "2"
+members = [
+    ".",
+    "crates/photon-targeting",
+    "crates/photon-common",
+    "crates/photon-hal",
+    "crates/photon-vision",
+    "crates/photon-web",
+]
+
+[workspace.package]
+version = "2027.0.0"
+edition = "2021"
+license = "GPL-3.0-or-later"
+authors = ["PhotonVision Developers"]
+
+[workspace.dependencies]
+anyhow = "1.0"
+thiserror = "2.0"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+rmp-serde = "1.3"
+prost = "0.13"
+bytes = "1.7"
+nalgebra = { version = "0.33", features = ["serde-serialize"] }
+rusqlite = { version = "0.32", features = ["bundled"] }
+zip = { version = "2.2", default-features = false, features = ["deflate"] }
+tokio = { version = "1.40", features = ["full"] }
+tokio-tungstenite = "0.24"
+futures-util = "0.3"
+axum = { version = "0.7", features = ["ws", "multipart"] }
+tower-http = { version = "0.6", features = ["cors", "fs"] }
+crossbeam-channel = "0.5"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+sysinfo = "0.32"
+image = { version = "0.25", default-features = false, features = ["jpeg", "png"] }
+imageproc = "0.25"
+openh264 = "0.6"
+clap = { version = "4.5", features = ["derive"] }
+uuid = { version = "1.10", features = ["v4", "serde"] }
+regex = "1.11"
+tempfile = "3.13"
+
+photon-targeting = { path = "crates/photon-targeting" }
+photon-common = { path = "crates/photon-common" }
+photon-hal = { path = "crates/photon-hal" }
+photon-vision = { path = "crates/photon-vision" }
+photon-web = { path = "crates/photon-web" }
+
+[workspace.lints.rust]
+unsafe_code = "deny"
+
+[workspace.lints.clippy]
+unwrap_used = "warn"
+
+[package]
+name = "fast-photon-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[features]
+default = []
+rknn = ["photon-vision/rknn"]
+tflite = ["photon-vision/tflite"]
+libcamera = ["photon-vision/libcamera"]
+mrcal = ["photon-vision/mrcal"]
+gpio = ["photon-hal/gpio"]
+system-opencv = ["photon-vision/system-opencv"]
+jetson-orin-nano = ["photon-hal/jetson-orin-nano", "photon-vision/jetson-orin-nano", "tflite", "gpio"]
+
+[[bin]]
+name = "fast-photon-core"
+path = "src/main.rs"
+
+[[bin]]
+name = "fast-photonvision-core"
+path = "src/bin/fast-photonvision-core.rs"
+
+[[bin]]
+name = "fast-phontonvision-core"
+path = "src/bin/fast-phontonvision-core.rs"
+
+[dependencies]
+anyhow.workspace = true
+axum.workspace = true
+clap.workspace = true
+tokio.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+photon-targeting.workspace = true
+photon-common.workspace = true
+photon-hal.workspace = true
+photon-vision.workspace = true
+photon-web.workspace = true
+
+[dev-dependencies]
+tempfile.workspace = true
+rusqlite.workspace = true
+serde_json.workspace = true
+rmp-serde.workspace = true
+prost.workspace = true
+image.workspace = true
+openh264.workspace = true
+axum.workspace = true
+tower = { version = "0.5", features = ["util"] }
+
+[[bench]]
+name = "pipeline_benchmarks"
+harness = false
+
+[lints]
+workspace = true

@@ -1,0 +1,277 @@
+openapi: 3.0.3
+info:
+  title: fast-photon-core Embedded REST & Streaming API
+  version: 2027.0.0
+  description: >
+    HTTP REST, WebSocket (/websocket_data), and MJPEG streaming endpoints served directly
+    by the standalone `fast-photon-core` binary for 100% compatibility with `photon-client`.
+servers:
+  - url: http://localhost:5800
+    description: Main PhotonVision Web UI & REST API port
+  - url: http://localhost:1181
+    description: MJPEG Stream ports (1181 = cam0 input, 1182 = cam0 output, 1183 = cam1 input, ...)
+paths:
+  /websocket_data:
+    get:
+      summary: MessagePack WebSocket Data Exchange
+      description: >
+        Upgrades to a binary WebSocket speaking MessagePack (`rmp-serde`).
+        Accepts `WSMessage { cameraUniqueName, ...properties }` and broadcasts `OutgoingUIEvent` maps.
+      responses:
+        '101':
+          description: Switching Protocols (WebSocket Binary MessagePack)
+  /api/status:
+    get:
+      summary: Health status check
+      responses:
+        '200':
+          description: Server is healthy
+  /api/settings:
+    post:
+      summary: Import full PhotonVision settings zip archive
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Settings imported successfully
+  /api/settings/photonvision_config.zip:
+    get:
+      summary: Export full PhotonVision configuration directory as a zip archive
+      responses:
+        '200':
+          description: Zip archive of photon.sqlite and config directory
+          content:
+            application/zip:
+              schema:
+                type: string
+                format: binary
+  /api/settings/hardwareConfig:
+    post:
+      summary: Update HardwareConfig in photon.sqlite
+      responses:
+        '200':
+          description: HardwareConfig saved
+  /api/settings/hardwareSettings:
+    post:
+      summary: Update HardwareSettings
+      responses:
+        '200':
+          description: HardwareSettings saved
+  /api/settings/networkConfig:
+    post:
+      summary: Update NetworkConfig and apply OS network settings
+      responses:
+        '200':
+          description: NetworkConfig saved
+  /api/settings/fieldLayout:
+    post:
+      summary: Update AprilTagFieldLayout
+      responses:
+        '200':
+          description: FieldLayout saved
+  /api/settings/general:
+    post:
+      summary: Update general settings
+      responses:
+        '200':
+          description: General settings saved
+  /api/settings/camera:
+    post:
+      summary: Update camera configuration/FOV/quirks
+      responses:
+        '200':
+          description: Camera settings saved
+  /api/settings/camera/setNickname:
+    post:
+      summary: Rename a camera module
+      responses:
+        '200':
+          description: Camera nickname updated
+  /api/settings/camera/getCalibImages:
+    get:
+      summary: Retrieve calibration board observation images for a camera resolution
+      responses:
+        '200':
+          description: Calibration images payload
+  /api/settings/camera/getCalibration:
+    get:
+      summary: Retrieve calibration JSON coefficients for a camera resolution
+      responses:
+        '200':
+          description: Calibration coefficients JSON
+  /api/settings/camera/getUncertainty:
+    get:
+      summary: Retrieve mrcal / calibration uncertainty data
+      responses:
+        '200':
+          description: Uncertainty JSON
+  /api/utils/offlineUpdate:
+    post:
+      summary: Upload offline program update jar/binary
+      responses:
+        '200':
+          description: Update staged
+  /api/utils/photonvision-journalctl.txt:
+    get:
+      summary: Export system/application logs
+      responses:
+        '200':
+          description: Plaintext log stream
+  /api/utils/restartProgram:
+    post:
+      summary: Restart the PhotonVision process
+      responses:
+        '200':
+          description: Restarting program
+  /api/utils/restartDevice:
+    post:
+      summary: Reboot the coprocessor OS
+      responses:
+        '200':
+          description: Rebooting device
+  /api/utils/getImageSnapshots:
+    get:
+      summary: List or download saved input/output frame snapshots
+      responses:
+        '200':
+          description: Snapshot archive or listing
+  /api/utils/getCalSnapshot:
+    get:
+      summary: Fetch specific calibration snapshot image
+      responses:
+        '200':
+          description: Image file
+  /api/utils/getCalibrationJSON:
+    get:
+      summary: Download camera calibration JSON file
+      responses:
+        '200':
+          description: Calibration JSON attachment
+  /api/utils/nukeConfigDirectory:
+    post:
+      summary: Delete and reset the entire configuration directory
+      responses:
+        '200':
+          description: Config directory reset
+  /api/utils/nukeOneCamera:
+    post:
+      summary: Delete configuration for a single camera by uniqueName
+      responses:
+        '200':
+          description: Camera deleted
+  /api/utils/activateMatchedCamera:
+    post:
+      summary: Reactivate a deactivated camera configuration
+      responses:
+        '200':
+          description: Camera activated
+  /api/utils/assignUnmatchedCamera:
+    post:
+      summary: Assign an unmatched PVCameraInfo to a new VisionModule
+      responses:
+        '200':
+          description: Camera assigned
+  /api/utils/unassignCamera:
+    post:
+      summary: Deactivate an active VisionModule while retaining its saved config
+      responses:
+        '200':
+          description: Camera deactivated
+  /api/calibration/compute:
+    post:
+      summary: Compute camera calibration from pending observations
+      responses:
+        '200':
+          description: Calibration computed
+  /api/calibration/commit:
+    post:
+      summary: Commit or discard computed calibration
+      responses:
+        '200':
+          description: Calibration committed
+  /api/calibration/cancel:
+    post:
+      summary: Cancel active calibration session
+      responses:
+        '200':
+          description: Calibration cancelled
+  /api/calibration/importFromData:
+    post:
+      summary: Import calibration coefficients from JSON payload
+      responses:
+        '200':
+          description: Calibration imported
+  /api/calibration/remove:
+    post:
+      summary: Remove calibration for a specific resolution
+      responses:
+        '200':
+          description: Calibration removed
+  /api/objectdetection/import:
+    post:
+      summary: Import a single RKNN or TFLite object detection model
+      responses:
+        '200':
+          description: Model imported
+  /api/objectdetection/bulkimport:
+    post:
+      summary: Import a bundle of object detection models
+      responses:
+        '200':
+          description: Models imported
+  /api/objectdetection/export:
+    get:
+      summary: Export all object detection models
+      responses:
+        '200':
+          description: Models archive
+  /api/objectdetection/exportIndividual:
+    get:
+      summary: Export a single object detection model
+      responses:
+        '200':
+          description: Model file
+  /api/objectdetection/delete:
+    post:
+      summary: Delete an object detection model
+      responses:
+        '200':
+          description: Model deleted
+  /api/objectdetection/rename:
+    post:
+      summary: Rename an object detection model
+      responses:
+        '200':
+          description: Model renamed
+  /api/objectdetection/nuke:
+    post:
+      summary: Reset object detection models to defaults
+      responses:
+        '200':
+          description: Models reset
+  /api/test/resetBackend:
+    post:
+      summary: Reset backend state for automated integration tests
+      responses:
+        '200':
+          description: Backend reset
+  /api/test/activateTestMode:
+    post:
+      summary: Enable test mode with file vision sources
+      responses:
+        '200':
+          description: Test mode enabled
+  /api/test/override/platform:
+    post:
+      summary: Override detected platform for UI testing
+      responses:
+        '200':
+          description: Platform overridden
